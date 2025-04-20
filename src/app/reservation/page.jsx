@@ -1,28 +1,26 @@
 "use client";
 import React, { useState } from "react";
-import Header from "../common/Header";
+
 import Stepper from "react-stepper-horizontal";
+
+import { APPOINTMENT_STEPS } from "@/app/utils/constants/constants";
+
+import Header from "../common/Header";
 import NextServiceButton from "../common/NextServiceButton.jsx";
 import SelectMenu from "../common/SelectMenu";
+
 export default function page() {
   const [activeStep, setActiveStep] = useState(0);
-
-  const steps = [
-    { title: "Service"},
-    { title: "Salon details"},
-    { title: "Hairdresser"},
-    { title: "Payment"},
-  ];
 
   return (
     <div className="w-[100vw] h-[100vh] flex flex-col justify-between items-center">
       <Header />
 
       <div className="shadow-lg w-[40vw] h-[60vh] flex flex-col justify-between items-center">
-        <Stepper steps={steps} activeStep={activeStep} />
+        <Stepper steps={APPOINTMENT_STEPS} activeStep={activeStep} />
 
         <div className="flex flex-col gap-16 ">
-          <SelectMenu activeStep={steps[activeStep]}/>
+          <SelectMenu activeStep={APPOINTMENT_STEPS[activeStep]}/>
         </div>
 
         <hr />
