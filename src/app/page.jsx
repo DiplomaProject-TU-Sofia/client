@@ -1,14 +1,16 @@
 "use client";
 import Image from "next/image";
 
-import { CONTACT_BUTTON_STRING, RESERVE_BUTTON_STRING } from "@/app/utils/constants/constants";
+import {
+  CONTACT_BUTTON_STRING,
+  RESERVE_BUTTON_STRING,
+} from "@/app/utils/constants/constants";
 
-import MenuButton from "./common/MenuButton";
-import SmoothButton from "./common/SmoothButton";
-import LogInPanel from "./common/LogInPanel";
+import MenuButton from "./utils/common/MenuButton";
+import SmoothButton from "./utils/common/SmoothButton";
+import LogInPanel from "./utils/common/LogInPanel";
 import { useRouter } from "next/navigation";
 export default function Home() {
-
   const router = useRouter();
 
   return (
