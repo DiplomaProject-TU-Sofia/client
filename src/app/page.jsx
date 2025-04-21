@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import Image from "next/image";
 
 import {
@@ -8,9 +9,10 @@ import {
 
 import MenuButton from "./utils/common/MenuButton";
 import SmoothButton from "./utils/common/SmoothButton";
-import LogInPanel from "./utils/common/LogInPanel";
+import AuthPanel from "./utils/common/AuthPanel";
 import { useRouter } from "next/navigation";
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   return (
@@ -32,7 +34,13 @@ export default function Home() {
               height={20}
               alt="logo"
             />
-            <LogInPanel />
+            { 
+              isLoggedIn 
+                ?
+                null
+                :
+                <AuthPanel setIsLoggedIn={setIsLoggedIn} />
+            }
             <Image src={"/assets/cart.svg"} width={25} height={20} alt="logo" />
           </div>
         </div>

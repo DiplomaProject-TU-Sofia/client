@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@syncfusion/ej2-react-schedule": "^28.2.5",
+    "axios": "^1.8.4",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -6,4 +6,6 @@ export const APPOINTMENT_STEPS = [
     { title: "Salon details"},
     { title: "Hairdresser"},
     { title: "Payment"},
-  ];
+];
+  
+export const BASE_URL = "https://localhost:7051";
