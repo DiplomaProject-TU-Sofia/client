@@ -6,7 +6,8 @@ import { useState } from "react";
 import Image from "next/image";
 import GoogleLoginButton from "./GoogleLoginButton";
 import AppleLoginButton from "./AppleLoginButton";
-import { BASE_URL } from "../constants/constants";
+
+import { handleLogIn, handleRegister } from "../services/auth";
 
 export default function AuthPanel ({ setIsLoggedIn }) {
   const [isVisible, setVisible] = useState(false);
@@ -23,33 +24,6 @@ export default function AuthPanel ({ setIsLoggedIn }) {
     setPassword("");
     setRegisterView(!registerView);
     };
-    
-    const handleLogIn = async () => { 
-        try {
-            const res = await fetch(`${BASE_URL}/api/auth/login`, {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                email,
-                password,
-                }),
-            });
-            const data = await res.json();
-            if (res.status === 200) {
-                setVisible(false);
-                localStorage.setItem("token", data.token);
-                setEmail("");
-                setPassword("");
-                setIsLoggedIn(true);
-                //TODO: redirect fetch userRole and redirect
-            }
-            
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
   return (
     <>
@@ -115,7 +89,7 @@ export default function AuthPanel ({ setIsLoggedIn }) {
                         placeholder="Confirm Password"
                       />
                       <div className="flex flex-row justify-between items-center">
-                        <button className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]">
+                        <button onClick={handleRegister} className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]">
                           Register
                         </button>
                       </div>
