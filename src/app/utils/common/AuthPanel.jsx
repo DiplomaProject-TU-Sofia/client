@@ -2,16 +2,16 @@
 
 import React from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import Image from "next/image";
 import GoogleLoginButton from "./GoogleLoginButton";
 import AppleLoginButton from "./AppleLoginButton";
 
-import { handleLogIn, handleRegister } from "../services/auth";
+import { logIn, register } from "../services/auth";
 
-export default function AuthPanel ({ setIsLoggedIn }) {
-  const [isVisible, setVisible] = useState(false);
-    const [registerView, setRegisterView] = useState(false);
+export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
+  const [registerView, setRegisterView] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -19,11 +19,38 @@ export default function AuthPanel ({ setIsLoggedIn }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const router = useRouter();
+
   const toggleRegisterView = () => {
     setEmail("");
     setPassword("");
     setRegisterView(!registerView);
-    };
+  };
+
+  const handleLogIn = async () => {
+    const data = await logIn(email, password);
+    if (data) { 
+      setVisible(false);
+      setEmail("");
+      setPassword("");
+      setIsLoggedIn(true);
+      if (data.role === "Admin") router.push("/admin");
+      if (data.role === "Worker") router.push("/appointment");
+    }
+  };
+
+  const handleRegister = async () => {
+    const status = await register(firstName, lastName, email, password, confirmPassword);
+    if (status === 200) {
+      setRegisterView(false);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    }
+      
+  };
 
   return (
     <>
@@ -89,7 +116,10 @@ export default function AuthPanel ({ setIsLoggedIn }) {
                         placeholder="Confirm Password"
                       />
                       <div className="flex flex-row justify-between items-center">
-                        <button onClick={handleRegister} className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]">
+                        <button
+                          onClick={handleRegister}
+                          className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]"
+                        >
                           Register
                         </button>
                       </div>
@@ -143,7 +173,10 @@ export default function AuthPanel ({ setIsLoggedIn }) {
                         <input className="w-8 h-8" type="checkbox" />
                         <label className="text-xl font-mono">Remember me</label>
                       </div>
-                      <button onClick={handleLogIn} className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]">
+                      <button
+                        onClick={handleLogIn}
+                        className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]"
+                      >
                         Log In
                       </button>
                     </div>

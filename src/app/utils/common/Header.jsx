@@ -1,15 +1,18 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
 import NavigateBackButton from './NavigateBackButton'
 
 
 
-export default function Header() {
+export default function Header({ isUser}) {
   return (
-      <div className='w-[100vw] flex flex-row justify-between items-center bg-white p-5 shadow-lg'>
-          <div>
+    <div className='w-[100vw] flex flex-row justify-between items-center bg-white p-5 shadow-lg'>
+      <div className='min-w-48'>
+      {
+        isUser ? 
             <NavigateBackButton/>
+            : null
+          }
           </div>
 
           <div >

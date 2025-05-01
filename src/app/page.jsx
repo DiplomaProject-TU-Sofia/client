@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import {
   CONTACT_BUTTON_STRING,
@@ -10,17 +11,22 @@ import {
 import MenuButton from "./utils/common/MenuButton";
 import SmoothButton from "./utils/common/SmoothButton";
 import AuthPanel from "./utils/common/AuthPanel";
-import { useRouter } from "next/navigation";
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("token") !== null);
+  const [isVisible, setVisible] = useState(false);
+
   const router = useRouter();
+
+  const handleRedirect = () => { 
+    isLoggedIn ? router.push("/reservation") : setVisible(true);
+  }
 
   return (
     <>
       <section className="h-[100vh] flex flex-col justify-between items-center">
         <div className="w-[98vw] flex justify-around gap-[20rem] items-center p-5">
           <div className="z-20">
-            <MenuButton />
+            <MenuButton isLoggedIn={isLoggedIn} setIsLoggedIn={ setIsLoggedIn} />
           </div>
 
           <div className="z-20">
@@ -39,13 +45,13 @@ export default function Home() {
                 ?
                 null
                 :
-                <AuthPanel setIsLoggedIn={setIsLoggedIn} />
+                <AuthPanel setIsLoggedIn={setIsLoggedIn} isVisible={isVisible} setVisible={setVisible}/>
             }
             <Image src={"/assets/cart.svg"} width={25} height={20} alt="logo" />
           </div>
         </div>
         <div className="z-20 flex flex-row gap-10">
-          <div onClick={() => router.push("/reservation")}>
+          <div onClick={handleRedirect}>
             <SmoothButton name={RESERVE_BUTTON_STRING} />
           </div>
           <div>

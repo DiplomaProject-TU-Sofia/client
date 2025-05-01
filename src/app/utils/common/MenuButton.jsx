@@ -1,12 +1,11 @@
 'use client'
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image'
 import styled from 'styled-components';
 
+import { logOut } from '../services/auth';
 
-import SideMenu from './SideMenu';
-
-const MenuButton = () => {
+const MenuButton = ({ isLoggedIn, setIsLoggedIn}) => {
 
   const [isVisible, setVisible] = useState(false)
  
@@ -17,7 +16,13 @@ const MenuButton = () => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return null; // Prevents initial render flash
+  if (!isMounted) return null;
+
+  const handleLogOut = () => { 
+    logOut();
+    setIsLoggedIn(false);
+    setVisible(false);
+  }
 
   return (
     <>
@@ -37,7 +42,20 @@ const MenuButton = () => {
         isVisible ?
           <>
             <div className="fixed z-20 h-[100vh] w-[85vw] left-[15vw] top-0 bg-black bg-opacity-50 animate-fadeIn" onClick={() => setVisible(false)}></div>
-            <SideMenu/>
+            <div className=' z-20 fixed top-0 left-0 w-[15vw] h-[100vh] bg-white animate-fadeIn'>
+            <div className='p-10 flex flex-col gap-5 text-[#BEAB96] font-mono'>
+                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+                { 
+                  isLoggedIn ? 
+                    <h3 onClick={handleLogOut} className='text-2xl cursor-pointer'>Log Out</h3>
+                    : null
+                }
+          </div>
+    </div>
             <div className='z-30 absolute top-0 left-[15vw] hover:cursor-pointer' onClick={()=>setVisible(false)}>
               <Image src={'/assets/close.svg'} width={25} height={20} alt='logo' />
             </div>

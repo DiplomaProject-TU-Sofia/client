@@ -1,8 +1,21 @@
-import React from "react";
+'use client'
+
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Header from "../utils/common/Header";
 import DisplayCard from "../utils/common/DisplayCard";
 
 export default function page() {
+
+  const router = useRouter();
+
+  useEffect(() => { 
+    const role = localStorage.getItem("role");
+    if (role !== "Admin") {
+      router.replace("/not-found");
+    }
+  })
+
   const test = [1, 2, 3, 4, 5, 6, 7, 8];
   return (
     <div className="flex flex-col gap-10">
