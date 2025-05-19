@@ -10,12 +10,12 @@ export default function page() {
 
     const router = useRouter();
     
-    useEffect(() => { 
-      const role = localStorage.getItem("role");
-      if (role !== "Worker") {
-        router.replace("/not-found");
-      }
-    })
+    // useEffect(() => { 
+    //   const role = localStorage.getItem("role");
+    //   if (role !== "Worker") {
+    //     router.replace("/not-found");
+    //   }
+    // })
   
   
   return (

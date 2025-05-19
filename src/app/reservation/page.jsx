@@ -34,6 +34,7 @@ export default function page() {
 
         <div className="flex flex-col gap-16 ">
           <SelectMenu activeStep={APPOINTMENT_STEPS[activeStep]} />
+          <input type="date" className="bg-red-300"/>
         </div>
 
         <hr />

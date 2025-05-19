@@ -6,7 +6,7 @@ import NavigateBackButton from './NavigateBackButton'
 
 export default function Header({ isUser}) {
   return (
-    <div className='w-[100vw] flex flex-row justify-between items-center bg-white p-5 shadow-lg'>
+    <div className='w-[99vw] flex flex-row justify-between items-center bg-white p-5 shadow-lg'>
       <div className='min-w-48'>
       {
         isUser ? 

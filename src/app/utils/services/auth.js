@@ -1,8 +1,8 @@
-import { BASE_URL } from "../constants/constants";
+import { AUTH_URL } from "../constants/constants";
 
 export const logIn = async (email, password) => {
   try {
-    const res = await fetch(`${BASE_URL}/api/auth/login`, {
+    const res = await fetch(`${AUTH_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -13,7 +13,6 @@ export const logIn = async (email, password) => {
       }),
     });
     if (res.status === 200) {
-      
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
@@ -32,7 +31,7 @@ export const register = async (
   confirmPassword
 ) => {
   try {
-    await fetch(`${BASE_URL}/api/auth/register`, {
+    await fetch(`${AUTH_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,6 +51,6 @@ export const register = async (
   }
 };
 
-export const logOut = () => { 
+export const logOut = () => {
   localStorage.removeItem("token");
-}
+};
