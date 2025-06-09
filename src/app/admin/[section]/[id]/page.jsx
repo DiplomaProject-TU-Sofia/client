@@ -8,12 +8,16 @@ import AdminLayout from "@/app/utils/layouts/AdminLayout";
 import ItemCard from "@/app/utils/common/ItemCard";
 import AddItemsModal from "@/app/utils/common/AddItemsModal";
 
+import { getAllSaloons, getAllServices, getAllWorkers } from "@/app/utils/services/admin";
+
 export default function Page({ params }) {
   const { section } = use(params);
   const { id } = use(params);
 
   const [data, setData] = useState();
   const [workers, setWorkers] = useState();
+  const [services, setServices] = useState();
+  const [saloons, setSaloons] = useState();
   const [isLoading, setLoading] = useState(true);
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -26,6 +30,9 @@ export default function Page({ params }) {
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [filteredItems, setFilteredItems] = useState();
+  const [workerSectionViewModal, setWorkerSectionViewModal] = useState(false);
+  const [modalType, setModalType] = useState("");
 
   const inputRefs = useRef({});
 
@@ -33,23 +40,23 @@ export default function Page({ params }) {
   const saloonType = "saloon";
 
   useEffect(() => {
-    getItemDetails();
+  fetchData()
   }, [refresh]);
 
-  const getItemDetails = async () => {
-    try {
-      http.get(`${ADMIN_URL}/api/${section}/${id}`).then((response) => {
-        if (response.data) setData(response?.data);
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchData = async () => { 
+    getItemDetails();
+    const servicesResponse = await getAllServices()
+    const workersResponse = await getAllWorkers()
+    const saloonsResponse = await getAllSaloons()
+
+    setServices(servicesResponse)
+    setWorkers(workersResponse)
+    setSaloons(saloonsResponse)
+  }
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       if (section == "saloons") {
         setName(data.name || "");
         setAddress(data.location || "");
@@ -74,6 +81,18 @@ export default function Page({ params }) {
       });
     }
   }, [data?.workHours]);
+
+  const getItemDetails = async () => {
+    try {
+      http.get(`${ADMIN_URL}/api/${section}/${id}`).then((response) => {
+        if (response.data) setData(response?.data);
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const capitalize = (str) =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -169,27 +188,14 @@ export default function Page({ params }) {
     } catch (error) {}
   };
 
-  const getAllWorkers = async () => {
-    try {
-      return await http.get(`${ADMIN_URL}/api/workers`).then((response) => {
-        setWorkers(response.data);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getAllWorkers();
-  }, []);
-
   const renderSaloonSection = () => (
     <>
       <h1 className="text-4xl font-bold text-center text-gray-800">
         {data?.name}
       </h1>
-
-      {/* Saloon Info */}
+      <div className="flex gap-20">
+        <div>
+  {/* Saloon Info */}
       <div className="space-y-4">
         <div className="flex flex-col">
           <label className="text-gray-600 font-medium mb-1">ID</label>
@@ -222,9 +228,37 @@ export default function Page({ params }) {
         </div>
       </div>
 
-      {/* Work Hours */}
-      <div className="mt-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+      {/* Workers */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Workers</h2>
+        <div className="grid gap-4 items-center grid-cols-[repeat(auto-fit,minmax(auto,10rem))]">
+          {data?.workers.map((worker, index) => (
+            <ItemCard
+              key={index}
+              toast={toast}
+              refresh={refresh}
+              section={section}
+              setRefresh={setRefresh}
+              id={id}
+              item={worker}
+            />
+          ))}
+          <div className="flex justify-center">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="rounded-md max-w-fit p-2 justify-center items-center text-2xl bg-[#E0D2C3] text-white"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+        </div>
+        <div>
+          {/* Work Hours */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
           Work Hours
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -257,33 +291,9 @@ export default function Page({ params }) {
             ))}
         </div>
       </div>
-
-      {/* Workers */}
-      <div className="mt-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Workers</h2>
-        <div className="grid gap-4 items-center grid-cols-[repeat(auto-fit,minmax(auto,10rem))]">
-          {data?.workers.map((worker, index) => (
-            <ItemCard
-              key={index}
-              toast={toast}
-              refresh={refresh}
-              section={section}
-              setRefresh={setRefresh}
-              id={id}
-              item={worker}
-            />
-          ))}
-          <div className="flex justify-center">
-            <button
-              onClick={() => setIsOpen(true)}
-              className="rounded-md max-w-fit p-2 justify-center items-center text-2xl bg-[#E0D2C3] text-white"
-            >
-              Add
-            </button>
-          </div>
         </div>
-      </div>
-
+    </div>
+    
       <div className="flex justify-center">
         <button
           onClick={() => updateSaloonDetails()}
@@ -300,7 +310,7 @@ export default function Page({ params }) {
         section={section}
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
-        workers={(workers || []).filter(
+        items={(workers || []).filter(
           (worker) => !(data?.workers || []).some((w) => w.id === worker.id)
         )}
       />
@@ -342,7 +352,16 @@ export default function Page({ params }) {
             />
           ))}
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setWorkerSectionViewModal(true);
+              setModalType("saloon");
+              setFilteredItems(
+                (saloons || []).filter(
+                  (saloon) =>
+                    !(data?.saloons || []).some((s) => s.id === saloon.id)
+                )
+              );
+            }}
             className="rounded-md max-w-fit p-2 justify-center items-center text-2xl bg-[#E0D2C3] text-white"
           >
             Add
@@ -367,13 +386,33 @@ export default function Page({ params }) {
             />
           ))}
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setWorkerSectionViewModal(true);
+              setModalType("service");
+              setFilteredItems(
+                (services || []).filter(
+                  (service) =>
+                    !(data?.services || []).some((s) => s.id === service.id)
+                )
+              );
+            }}
             className="rounded-md max-w-fit p-2 justify-center items-center text-2xl bg-[#E0D2C3] text-white"
           >
             Add
           </button>
         </div>
       </div>
+      {console.log(services)}
+      <AddItemsModal
+        refresh={refresh}
+        setRefresh={setRefresh}
+        id={id}
+        section={section}
+        type={modalType}
+        modalIsOpen={workerSectionViewModal}
+        setIsOpen={setWorkerSectionViewModal}
+        items={filteredItems}
+      />
     </>
   );
 
@@ -467,7 +506,7 @@ export default function Page({ params }) {
         section={section}
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
-        workers={(workers || []).filter(
+        items={(workers || []).filter(
           (worker) => !(data?.workers || []).some((w) => w.id === worker.id)
         )}
       />
@@ -476,13 +515,13 @@ export default function Page({ params }) {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer style={{zIndex: 9999}} />
       {isLoading ? (
         <Loader />
       ) : (
         <>
           <AdminLayout />
-          <section className="bg-gray-100 py-10">
+          <section className="flex absolute top-[5rem] left-[8rem] items-center mt-10 right-0 rounded-lg bg-white z-40 h-[45rem]">
             <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 space-y-6">
               {section === "saloons" && renderSaloonSection()}
               {section === "workers" && renderWorkerSection()}

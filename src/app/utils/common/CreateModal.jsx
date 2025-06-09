@@ -3,18 +3,12 @@ import React, { useEffect, useState } from "react";
 import { ADMIN_URL, AUTH_URL, MODAL_STYLES } from "../constants/constants";
 import http from "../interceptors/auth";
 import { toast } from "react-toastify";
-
 export default function CreateModal({
   section,
   setRefresh,
   modalIsOpen,
   setIsOpen,
 }) {
-
-    useEffect(() => {
-    Modal.setAppElement("#app-root");
-  }, []);
-  
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -119,18 +113,32 @@ export default function CreateModal({
       toast.success(`Successfully created ${section.slice(0, -1)}`);
       setRefresh((prev) => !prev);
       setIsOpen(false);
+      clearFields();
     } catch (error) {
       console.error(error);
       toast.error("Failed to create " + section.slice(0, -1));
     }
   };
 
+  const clearFields = () => {
+    setName("");
+    setDescription("");
+    setPrice("");
+    setLocation("");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+  };
   return (
     <Modal
       isOpen={modalIsOpen}
       onRequestClose={() => setIsOpen(false)}
       style={MODAL_STYLES}
       contentLabel={`Add new ${section.slice(0, -1)}`}
+      appElement={document.getElementById("app-root")} // Pass the app root here
+      parentSelector={() => document.getElementById("app-modal")} // your modal container
     >
       <div className="space-y-4">
         <h2 className="text-xl font-bold capitalize">

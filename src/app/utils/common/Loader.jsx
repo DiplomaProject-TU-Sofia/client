@@ -4,7 +4,9 @@ import styled from 'styled-components';
 const Loader = () => {
   return (
     <StyledWrapper>
-      <div className="loader" />
+      <div className='h-[100vh] w-[99vw] opacity-50 bg-black z-[80] absolute top-0 left-0'>
+      <div className="loader z-[70] relative top-[50%] left-[50%]" />
+      </div>
     </StyledWrapper>
   );
 }

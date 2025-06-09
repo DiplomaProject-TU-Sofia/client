@@ -1,6 +1,6 @@
 import { AUTH_URL } from "../constants/constants";
 
-export const logIn = async (email, password) => {
+export const logIn = async (email, password,setData,toast) => {
   try {
     const res = await fetch(`${AUTH_URL}/api/auth/login`, {
       method: "POST",
@@ -16,10 +16,12 @@ export const logIn = async (email, password) => {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
-      return data;
+      setData(data);
+    } else { 
+      toast.error("Wrong email or password")
     }
   } catch (error) {
-    console.log(error);
+    toast.error("Something went wrong")
   }
 };
 
@@ -28,7 +30,8 @@ export const register = async (
   lastName,
   email,
   password,
-  confirmPassword
+  confirmPassword,
+  toast
 ) => {
   try {
     await fetch(`${AUTH_URL}/api/auth/register`, {
@@ -44,13 +47,15 @@ export const register = async (
         confirmPassword,
       }),
     }).then((res) => {
+      if(res.status === 200) toast.success("Successfully registered")
       return res.status;
     });
   } catch (error) {
-    console.log(error);
+    toast.error("Something went wrong")
   }
 };
 
 export const logOut = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
 };

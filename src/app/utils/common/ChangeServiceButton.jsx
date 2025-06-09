@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export default function NextServiceButton ({setActiveStep}) {
+export default function ChangeServiceButton ({text,buttonType,setActiveStep}) {
 
   return (
     <StyledWrapper>
-      <button onClick={()=>setActiveStep((state)=>state+1)}> Next
+      <button className='text-white text-xl italic font-medium tracking-wider' onClick={() => {
+        buttonType==="next"?setActiveStep((state) => state + 1):setActiveStep((state)=>state-1)
+      }}> {text}
       </button>
     </StyledWrapper>
   );

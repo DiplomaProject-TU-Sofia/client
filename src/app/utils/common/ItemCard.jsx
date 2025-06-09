@@ -17,24 +17,40 @@ export default function ItemCard({
     isLoading = true;
     let sectionSingular;
     let payload;
-    
-if (section === "services" || (section === "workers" && addType === "service")) {
-  sectionSingular = "service";
-  payload = {
-    data: {
-      workerId: item.id,
-      serviceId: id,
-    },
-  };
-} else if (section === "saloons" || (section === "workers" && addType === "saloon")) {
-  sectionSingular = "saloon";
-  payload = {
-    data: {
-      workerId: item.id,
-      saloonId: id,
-    },
-  };
-}
+
+    if (section === "services") {
+      sectionSingular = "service";
+      payload = {
+        data: {
+          workerId: item.id,
+          serviceId: id,
+        },
+      };
+    } else if (section === "saloons") {
+      sectionSingular = "saloon";
+      payload = {
+        data: {
+          workerId: item.id,
+          saloonId: id,
+        },
+      };
+    } else if (section === "workers" && addType === "saloon") {
+      sectionSingular = "saloon";
+      payload = {
+        data: {
+          workerId: id,
+          saloonId: item.id,
+        },
+      };
+    } else if (section === "workers" && addType === "service") {
+      sectionSingular = "service";
+      payload = {
+        data: {
+          workerId: id,
+          serviceId: item.id,
+        },
+      };
+    }
     try {
       console.log(item);
       await http
@@ -53,17 +69,18 @@ if (section === "services" || (section === "workers" && addType === "service")) 
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="flex gap-1 max-w-fit max-h-fit border-2 items-center whitespace-nowrap border-[#E0D2C3] rounded-md">
-          <h1 className="bg-[#E0D2C3] text-white text-2xl p-1">
-            {item?.firstName !== undefined && item?.lastName !== undefined
+        <div className="flex items-center gap-2 px-3 py-1 border-2 border-[#E0D2C3] rounded-full bg-white shadow-sm max-w-fit">
+          <span className="text-[#5A4C3B] font-medium text-base">
+            {item?.firstName && item?.lastName
               ? `${item.firstName} ${item.lastName}`
               : item?.name}
-          </h1>
+          </span>
           <button
             onClick={() => removeItem()}
-            className="bg-[#E0D2C3] text-white text-2xl p-1"
+            className="text-[#5A4C3B] hover:text-white hover:bg-[#E0D2C3] transition-colors duration-200 rounded-full p-1 w-6 h-6 flex items-center justify-center"
+            aria-label="Remove"
           >
-            X
+            ✕
           </button>
         </div>
       )}

@@ -11,17 +11,17 @@ import CreateModal from "@/app/utils/common/CreateModal";
 export default function page() {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState()
-  const [modalIsOpen , setIsOpen] = useState(false)
+  const [refresh, setRefresh] = useState();
+  const [modalIsOpen, setIsOpen] = useState(false);
   const params = useParams();
   const section = params.section;
 
   useEffect(() => {
-   getData()
+    getData();
   }, [refresh]);
 
-  const getData = async () => { 
-     try {
+  const getData = async () => {
+    try {
       http.get(`${ADMIN_URL}/api/${section}`).then((response) => {
         setData(response.data);
       });
@@ -30,22 +30,36 @@ export default function page() {
     } finally {
       setLoading(false);
     }
-  }
+  };
   return (
     <>
       <AdminLayout />
-      <div className="grid grid-cols-4 h-[70vh] place-items-start justify-start m-10">
-        {isLoading ? (
-          <Loader />
-        ) : (
-          data.map((element, index) => (
-            <DisplayCard refresh={refresh } setRefresh={ setRefresh } section={section} data={element} key={index} />
-          ))
-        )}
-        <div className="flex flex-col justify-center items-center">
-          <button onClick={()=>setIsOpen(true)} className=" bg-[#E0D2C3] rounded-lg text-center pl-10 mt-20 text-white text-xl">
-            Add <span className="ml-8 pr-3 pl-3 border-l-2">+</span>
-          </button>
+      <div className="flex absolute top-[5rem] left-[8rem] right-0 rounded-lg bg-white z-40">
+        <div className="grid relative top-0 right-0 left-0 grid-cols-4 h-[77vh] gap-5 place-items-start justify-start m-10 rounded-xl bg-white z-50 ">
+          {isLoading ? (
+            <Loader />
+          ) : (
+            data.map((element, index) => (
+              <DisplayCard
+                refresh={refresh}
+                setRefresh={setRefresh}
+                section={section}
+                data={element}
+                key={index}
+              />
+            ))
+          )}
+          <div className="flex flex-col justify-center items-center">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="mt-20 bg-cyan-600 hover:bg-cyan-700 transition-all duration-300 text-white text-xl font-semibold py-3 px-6 rounded-full shadow-md flex items-center gap-4"
+            >
+              Add
+              <span className="text-2xl bg-white text-cyan-600 w-8 h-8 flex items-center justify-center rounded-full shadow-inner">
+                +
+              </span>
+            </button>
+          </div>
         </div>
       </div>
       <CreateModal

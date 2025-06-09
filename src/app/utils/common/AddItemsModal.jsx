@@ -13,9 +13,8 @@ export default function AddItemsModal({
   section,
   modalIsOpen,
   setIsOpen,
-  workers,
-  addType,
-  items, 
+  items,
+  type,
 }) {
   useEffect(() => {
     Modal.setAppElement("#app-root");
@@ -35,7 +34,7 @@ export default function AddItemsModal({
   let sectionSingular;
   let payload;
 
-  if (section == "services") sectionSingular = "service";
+  if (section == "services" || type==="service") sectionSingular = "service";
   else sectionSingular = "saloon";
 
   const handleAddingWorker = () => {
@@ -44,13 +43,26 @@ export default function AddItemsModal({
       selectedWorkerId &&
       id &&
       (section === "services" ||
-        (section === "saloons" && selectedDays.length > 0))
+        (section === "saloons" && selectedDays.length > 0) ||
+        (section === "workers" && type==="saloon" && selectedDays.length > 0) ||
+        (section === "workers" && type === "service"))
     ) {
       try {
         if (section == "services") {
           payload = {
             WorkerId: selectedWorkerId,
             ServiceId: id,
+          };
+        } else if (type === "service") {
+          payload = {
+            WorkerId: id,
+            ServiceId: selectedWorkerId,
+          };
+        }else if (type === "saloon") {
+          payload = {
+            WorkerId: id,
+            SaloonId: selectedWorkerId,
+            WorkingDays: selectedDays
           };
         } else {
           payload = {
@@ -83,10 +95,22 @@ export default function AddItemsModal({
         contentLabel="Add new worker"
       >
         <div className="p-3 pl-20 pr-20  flex flex-col gap-10">
-          <h1 className="text-2xl text-[#E0D2C3] font-bold">Add new worker</h1>
+          {type === "service" || type==="saloon" ? (
+            <h1 className="text-2xl text-[#E0D2C3] font-bold">
+              Add new {type}
+            </h1>
+          ) : (
+            <h1 className="text-2xl text-[#E0D2C3] font-bold">
+              Add new worker
+            </h1>
+          )}
           <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-2">
-              <label>{sectionSingular.toUpperCase()} ID</label>
+              {type === "service" || type==="saloon" ? (
+                <label>Worker ID</label>
+              ) : (
+                <label>{sectionSingular.toUpperCase()} ID</label>
+              )}
               <input
                 className="border rounded-md p-2 w-[25vw] text-center"
                 type="text"
@@ -95,21 +119,32 @@ export default function AddItemsModal({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label>Choose Worker</label>
+              {type === "service" || type==="saloon" ? (
+                <label>Choose {type}</label>
+              ) : (
+                <label>Choose Worker</label>
+              )}
+
               <select
                 ref={workerSelectRef}
                 className="border rounded-md p-2 w-[25vw]"
               >
-                {Array.isArray(workers) &&
-                  workers.map((worker, index) => (
-                    <option key={index} value={worker.id}>
-                      {worker.firstName + worker.lastName}
-                    </option>
-                  ))}
+                {Array.isArray(items) &&
+                  items.map((item, index) =>
+                    type === "service" || type==="saloon" || type=="worker" ? (
+                      <option key={index} value={item.id}>
+                        {item.name}
+                      </option>
+                    ) : (
+                      <option key={index} value={item.id}>
+                        {item.firstName + " " + item.lastName}
+                      </option>
+                    )
+                  )}
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              {section == "saloons" ? (
+              {section == "saloons" || (section=="workers" && type==="saloon") ? (
                 <>
                   <label>Select Working Days</label>
                   <div className="grid grid-cols-2 gap-2">

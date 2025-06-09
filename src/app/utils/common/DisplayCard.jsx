@@ -46,25 +46,35 @@ export default function DisplayCard({ refresh, setRefresh, section, data }) {
   };
 
   return (
-    <div
-      onClick={() => openCardDetails()}
-      className="flex z-10 relative justify-between cursor-pointer flex-wrap items-center bg-white p-5 shadow-lg"
-    >
-      <div
-        
-        className="absolute z-20 top-0 right-0 rounded-full h-5 w-5 bg-red-500 text-white text-xl flex items-center justify-center"
-      >
-        <DeleteCardButton refresh={refresh} setRefresh={ setRefresh } section={section} id={ data.id } />
-      </div>
-      <div className="flex flex-col gap-5 items-center justify-center">
-        <Image
-          src={"/assets/testImage.webp"}
-          width={100}
-          height={100}
-          alt="image"
-        />
-        {renderCardContent()}
-      </div>
+  <div
+  onClick={() => openCardDetails()}
+  className="relative z-10 flex flex-col gap-4 cursor-pointer items-center bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 group w-[260px]" // fixed width
+>
+  {/* Delete Button */}
+  <div className="absolute top-3 right-3 z-20">
+    <div className="bg-red-500 hover:bg-red-600 transition text-white text-xs rounded-full h-6 w-6 flex items-center justify-center shadow-md">
+      <DeleteCardButton
+        refresh={refresh}
+        setRefresh={setRefresh}
+        section={section}
+        id={data.id}
+      />
     </div>
+  </div>
+
+  {/* Content */}
+  <div className="flex flex-col items-center text-center gap-4">
+    <Image
+      src="/assets/testImage.webp"
+      width={100}
+      height={100}
+      alt="image"
+      className="rounded-xl shadow-sm group-hover:scale-105 transition-transform duration-300"
+    />
+    <div className="text-gray-700 font-medium text-base break-words">
+      {renderCardContent()}
+    </div>
+  </div>
+</div>
   );
 }

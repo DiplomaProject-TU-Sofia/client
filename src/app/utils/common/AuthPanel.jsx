@@ -1,16 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Image from "next/image";
 import GoogleLoginButton from "./GoogleLoginButton";
-import AppleLoginButton from "./AppleLoginButton";
 
 import { logIn, register } from "../services/auth";
+import { toast, ToastContainer } from "react-toastify";
+import Loader from "./Loader";
 
-export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
+export default function AuthPanel({ setIsLoggedIn, isVisible, setVisible }) {
   const [registerView, setRegisterView] = useState(false);
 
   const [firstName, setFirstName] = useState("");
@@ -18,8 +19,23 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [data, setData] = useState();
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (data != undefined) {
+      setVisible(false);
+      setEmail("");
+      setPassword("");
+      setIsLoggedIn(true);
+      if (data.role === "Admin") router.push("/admin");
+      if (data.role === "Worker") router.push(`/appointment`);
+      setLoading(false);
+      //only token and role , need id
+    }
+  }, [data]);
 
   const toggleRegisterView = () => {
     setEmail("");
@@ -28,28 +44,56 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
   };
 
   const handleLogIn = async () => {
-    const data = await logIn(email, password);
-    if (data) { 
-      setVisible(false);
-      setEmail("");
-      setPassword("");
-      setIsLoggedIn(true);
-      if (data.role === "Admin") router.push("/admin");
-      if (data.role === "Worker") router.push("/appointment");
+    if (
+      email != undefined &&
+      email != "" &&
+      password != undefined &&
+      password != ""
+    ) {
+      setLoading(true);
+      await logIn(email, password, setData, toast).then(() => { 
+          toast.success("Successfully logged in")
+      });
+    } else {
+      toast.info("Please fill all fields");
     }
   };
 
   const handleRegister = async () => {
-    const status = await register(firstName, lastName, email, password, confirmPassword);
-    if (status === 200) {
-      setRegisterView(false);
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
+    if (
+      firstName != undefined &&
+      firstName != "" &&
+      lastName != undefined &&
+      lastName != "" &&
+      email != undefined &&
+      email != "" &&
+      password != undefined &&
+      password != "" &&
+      confirmPassword != undefined &&
+      confirmPassword != ""
+    ) {
+      setLoading(true);
+      const status = await register(
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+        toast
+      ).then(() => {
+        setLoading(false);
+      });
+      if (status === 200) {
+        setRegisterView(false);
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } else {
+      toast.info("Please fill all fields");
     }
-      
   };
 
   return (
@@ -65,6 +109,7 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
       {isVisible ? (
         <>
           <div className="z-20 fixed top-0 right-0 w-[40vw] h-[100vh] bg-white animate-fadeIn">
+            <ToastContainer/>
             <div className="p-10 flex flex-col justify-center items-center gap-5 text-[#BEAB96] font-mono">
               {registerView ? (
                 <>
@@ -72,8 +117,8 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
                     <h1 className="text-3xl font-mono p-5">Register</h1>
                     <hr />
                   </div>
-                  <div className="flex flex-col font-mono gap-10">
-                    <div className="flex flex-col items-center font-mono gap-5 mt-5">
+                  <div className="flex flex-col font-mono">
+                    <div className="grid grid-cols-2 items-center font-mono gap-5 mt-5">
                       <input
                         type="text"
                         name="firstName"
@@ -125,8 +170,7 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
                       </div>
                     </div>
 
-                    <hr />
-                    <div className="flex flex-row justify-around gap-10">
+                    <div className="flex flex-row mt-5 justify-around">
                       <label className="text-xl font-mono">
                         Already have an account ?
                       </label>
@@ -169,22 +213,13 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
                     </div>
 
                     <div className="flex flex-row justify-between items-center">
-                      <div className="flex items-center justify-center flex-row gap-2">
-                        <input className="w-8 h-8" type="checkbox" />
-                        <label className="text-xl font-mono">Remember me</label>
-                      </div>
+                      <GoogleLoginButton/>
                       <button
                         onClick={handleLogIn}
                         className="bg-[#BEAB96] font-mono text-white p-4 rounded-xl w-[15vw]"
                       >
                         Log In
                       </button>
-                    </div>
-
-                    <hr />
-                    <div className="flex flex-row justify-between">
-                      <AppleLoginButton />
-                      <GoogleLoginButton />
                     </div>
                     <hr />
                     <div className="flex flex-row justify-between">
@@ -220,6 +255,7 @@ export default function AuthPanel({ setIsLoggedIn , isVisible , setVisible }) {
           ></div>
         </>
       ) : null}
+      {isLoading ? <Loader /> : null}
     </>
   );
 }

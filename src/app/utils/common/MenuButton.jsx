@@ -4,6 +4,8 @@ import Image from 'next/image'
 import styled from 'styled-components';
 
 import { logOut } from '../services/auth';
+import { toast, ToastContainer } from 'react-toastify';
+import { sideMenuOptions } from '../constants/constants';
 
 const MenuButton = ({ isLoggedIn, setIsLoggedIn}) => {
 
@@ -20,6 +22,7 @@ const MenuButton = ({ isLoggedIn, setIsLoggedIn}) => {
 
   const handleLogOut = () => { 
     logOut();
+    toast.success("Successfully logged out")
     setIsLoggedIn(false);
     setVisible(false);
   }
@@ -43,12 +46,12 @@ const MenuButton = ({ isLoggedIn, setIsLoggedIn}) => {
           <>
             <div className="fixed z-20 h-[100vh] w-[85vw] left-[15vw] top-0 bg-black bg-opacity-50 animate-fadeIn" onClick={() => setVisible(false)}></div>
             <div className=' z-20 fixed top-0 left-0 w-[15vw] h-[100vh] bg-white animate-fadeIn'>
-            <div className='p-10 flex flex-col gap-5 text-[#BEAB96] font-mono'>
-                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
-                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
-                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
-                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
-                <h3 className='text-2xl cursor-pointer'>PR Beauty</h3>
+              <div className='p-10 flex flex-col gap-5 text-[#BEAB96] font-mono'>
+                { 
+                  sideMenuOptions.map((option,index) => (
+                    <h3 key={index} className='text-2xl cursor-pointer'><a onClick={()=>setVisible(false)} href={`#${option}`.toLowerCase()}>{option}</a></h3>
+                  ))
+                }
                 { 
                   isLoggedIn ? 
                     <h3 onClick={handleLogOut} className='text-2xl cursor-pointer'>Log Out</h3>
@@ -63,6 +66,7 @@ const MenuButton = ({ isLoggedIn, setIsLoggedIn}) => {
           
           : null
       }
+      <ToastContainer style={{zIndex: 9999}} />
     </>
   );
 }
