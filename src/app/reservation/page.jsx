@@ -124,7 +124,8 @@ export default function page() {
               <SelectMenu
                 setSelectedServiceId={setSelectedServiceId}
                 setSelectedSaloonId={setSelectedSaloonId}
-                setSelectedDate={setSelectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTimeSlot={ selectedTimeSlot }
               selectedDate={selectedDate}
               setContinueWithoutPayment={ setContinueWithoutPayment }
                 setSelectedTimeSlot={setSelectedTimeSlot}

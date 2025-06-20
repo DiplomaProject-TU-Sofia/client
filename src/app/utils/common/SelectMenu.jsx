@@ -7,6 +7,7 @@ export default function SelectMenu({
   services,
   today,
   workers,
+  selectedTimeSlot,
   setContinueWithoutPayment,
   activeStep,
   setSelectedDate,
@@ -140,31 +141,35 @@ export default function SelectMenu({
                   <div className="flex justify-between">
                     <span className="text-gray-600">Service</span>
                     <span className="font-medium text-gray-900">
-                      [Service Name]
+                      {selectedService[0].name}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Barber</span>
                     <span className="font-medium text-gray-900">
-                      [Barber Name]
+                      {Array.isArray(workers)&&workers.filter(worker=>worker.id===selectedWorkerId)[0].firstName}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Saloon</span>
-                    <span className="font-medium text-gray-900">
-                      [Saloon Name]
+                    <span className="font-medium text-gray-900 overflow-ellipsis whitespace-nowrap">
+                      {Array.isArray(saloons)&&saloons.filter(saloon=>saloon.id===selectedSaloonId)[0].name}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between">
+                    <span className="text-gray-600">Date</span>
+                    <span className="font-medium text-gray-900">{selectedDate}</span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-gray-600">Time</span>
-                    <span className="font-medium text-gray-900">[Time]</span>
+                    <span className="font-medium text-gray-900">{selectedTimeSlot.slice(0, -3)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Price</span>
-                    <span className="font-bold text-green-600">$[Price]</span>
+                    <span className="font-bold text-green-600">{ selectedService[0].price }</span>
                   </div>
                 </div>
               </div>

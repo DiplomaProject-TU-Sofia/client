@@ -30,7 +30,7 @@ export default function AuthPanel({ setIsLoggedIn, isVisible, setVisible }) {
       setEmail("");
       setPassword("");
       setIsLoggedIn(true);
-      if (data.role === "Admin") router.push("/admin");
+      if (data.role === "Admin") router.push("/admin/workers");
       if (data.role === "Worker") router.push(`/appointment`);
       setLoading(false);
       //only token and role , need id

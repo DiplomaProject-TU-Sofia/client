@@ -34,10 +34,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(token !== null);
-    }
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(token !== null);
   }, []);
 
   return (

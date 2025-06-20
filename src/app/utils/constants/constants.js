@@ -13,11 +13,11 @@ export const ADMIN_URL = "https://localhost:7296";
 export const CATALOG_URL = "https://localhost:7286";
 export const ADMIN_PAGE_URL = "http://localhost:3000/admin";
 
-export const ADMIN_LIST_OPTIONS = ["board", "workers", "saloons", "services"];
+export const ADMIN_LIST_OPTIONS = ["statistics", "workers", "saloons", "services"];
 
 export const MODAL_STYLES = {
   overlay: {
-    zIndex: 30,
+    zIndex: 9999,
   },
   content: {
     top: "50%",
@@ -26,6 +26,7 @@ export const MODAL_STYLES = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    zIndex: 9999
   },
 };
 
@@ -37,10 +38,7 @@ export const clientImages = [
   "/assets/img-carousel-5.jpg",
 ];
 
-export const sideMenuOptions = [
-  "About",
-  "Gallery",
-];
+export const sideMenuOptions = ["About", "Gallery"];
 
 export const partnerLogos = [
   "/assets/partner1.jpg",

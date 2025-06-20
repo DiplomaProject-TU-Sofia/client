@@ -9,7 +9,7 @@ const http = axios.create({
 http.interceptors.request.use(
   (config) => {
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+       localStorage.getItem("token")
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

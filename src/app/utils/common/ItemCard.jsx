@@ -58,7 +58,7 @@ export default function ItemCard({
         .then(() => {
           isLoading = false;
           setRefresh(!refresh);
-          toast.success(`Worker with id: ${item.id} has been removed`);
+          toast.success(`A worker has been successfully removed`);
         });
     } catch (error) {
       toast.error("Something went wrong:" + error);

@@ -16,6 +16,8 @@ export default function page() {
       router.replace("/not-found");
     } else {
       setLoader(false);
+      //board!
+      router.push("admin/workers");
     }
   }, []);
   
