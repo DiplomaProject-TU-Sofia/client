@@ -59,8 +59,6 @@ export default function page() {
       continueWithoutPayment,
       service
     )
-  //setContinueWithoutPayment()
-  //router.push('/reservation/success')
   }, [continueWithoutPayment]);
 
   useEffect(() => {

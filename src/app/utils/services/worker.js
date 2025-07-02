@@ -11,8 +11,9 @@ export const mapReservations = (apiData) => {
           Id: res.id,
           StartTime: new Date(res.startTime),
           EndTime: new Date(res.endTime),
-          Subject: res.blockTitle || ``,
+          Subject: `${res.blockTitle}${res.isPaid==true? "- Paid":""}`||``,
           Description: res.blockDescription || ``,
+          isPaid: res.isPaid
         });
       });
     });

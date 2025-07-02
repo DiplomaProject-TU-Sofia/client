@@ -23,7 +23,7 @@ export default function Header({ isUser }) {
           </h2>
         ) : (
           <h2 className="text-white text-xl italic font-medium tracking-wider">
-            Greetings, <span className="text-[#FFE5B4]">Admin</span>
+            Greetings <span className="text-[#FFE5B4]">Worker</span>
           </h2>
         )}
       </div>
